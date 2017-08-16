@@ -55,7 +55,7 @@ Basically, I used numpy to get summary statistics of the traffic signs data set:
 First, I printed out how many samples for each class_id in the training set, as following (in class_id increasing order):
 [180, 1980, 2010, 1260, 1770, 1650, 360, 1290, 1260, 1320, 1800, 1170, 1890, 1920, 690, 540, 360, 990, 1080, 180, 300, 270, 330, 450, 240, 1350, 540, 210, 480, 240, 390, 690, 210, 599, 360, 1080, 330, 180, 1860, 270, 300, 210, 210]
 
-Second, I showed 10 sample pictures, one for each class, in the ipynb file and the report html file. (ipynb gives warning if I show all 43 classes)
+Second, I showed 10 sample pictures (cell in[5] output), one for each class, in the ipynb file and the report html file. (ipynb gives warning if I show all 43 classes)
 
 ###Design and Test a Model Architecture
 
@@ -63,11 +63,11 @@ Second, I showed 10 sample pictures, one for each class, in the ipynb file and t
 
 First, I normalized the image data with the suggested methord, i.e. (pixel - 128) / 128, so that the input has 0 mean and small variance.
 
-Second, I decided to convert the images to grayscale. The reason is that, traffic sign has nothing to do with color and changing to one-channel image can reduce the intial number of feature maps and seems improving the validation accuracy with my training model. But I didn't really convert the images to grayscale, I only took the mean of the 3 channels as the 1-channel value, which should be similar to grayscale.  
+Second, I decided to convert the images to grayscale. The reason is that, traffic sign can well be recognized without color and changing to one-channel image can reduce the initial number of feature maps and seems improving the validation accuracy with my training model. But I didn't really convert the images to grayscale, I only took the mean of the 3 channels as the 1-channel value, which should be similar to grayscale.  
 
-From above statistics, I know the numbers of training samples of different classes are different, varing from 180 to 2010. But I didn't add additional data to the training set. Instead, based on some search results from internet, considering the training samples are relatively huge, I used the so-called under-sampling method. I.e. for each epoch, I don't take all the training samples, instead, I take the samples in a way such that for each class, it's no more than 1500. I also tried different numbers here, like 500, 1000, etc. But I don't see quite obvious improvement with this methord. I still used it since it seems giving a little better result.
+From above statistics, I know the numbers of training samples of different classes are different, varing from 180 to 2010. But I didn't add additional data to the training set. Instead, based on some search results from internet, considering the training samples are relatively huge, I used the so-called under-sampling method. I.e. for each epoch, I don't take all the training samples, instead, I take the samples in such a way that for each class, samples are no more than 1500. I also tried different numbers here, like 500, 1000, etc. But I don't see quite obvious improvement with this methord. I still used it since it seems giving a little better result.
 
-I also tried other preprocessing methords, like rotating some of the images, but didn't get ideal results. So I didn't include it here. I don't know if this is because I did it the wrong way or something else. 
+I also tried other preprocessing methods, like rotating some of the images, but didn't get ideal results. So I didn't include it here. I don't know if this is because I did it the wrong way or something else. 
 
 ####2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
 
@@ -99,31 +99,42 @@ To train the model, I used the Adam Optimizer, and batch size 128, 20 epochs, an
 ####4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
 
 My final model results were:
-* training set accuracy of 99.4% (I deleted the code to calculate the accuracy for the training set since I basically followed the code structure of LeNet example. The calculation mothod is basically same as test set accuracy)
-* validation set accuracy of 96.9
-* test set accuracy of 94.9
+* training set accuracy of 99.4% (I deleted the code to calculate the accuracy for the training set since I basically followed the code structure of LeNet example. The code to get this is basically same as that of test set accuracy)
+* validation set accuracy of 96.9 (see cell in[39] output)
+* test set accuracy of 94.9 (see cell in[40] output)
 
 If an iterative approach was chosen:
 * What was the first architecture that was tried and why was it chosen?
+
 The LeNet architecture. The reason is that it's a great architecture for classifying images, which is just the purpose for this project.
+
 * What were some problems with the initial architecture?
+
 Some small ajdustments are needed, like the input/output size for each layer, and the main problem is that the accuracy is only about 89%
+
 * How was the architecture adjusted and why was it adjusted? Typical adjustments could include choosing a different model architecture, adding or taking away layers (pooling, dropout, convolution, etc), using an activation function or changing the activation function. One common justification for adjusting an architecture would be due to overfitting or underfitting. A high accuracy on the training set but low accuracy on the validation set indicates over fitting; a low accuracy on both sets indicates under fitting.
+
 Basically, since the initial accuracy is low, I think it's because of underfitting. I think the reason should be that the traffic data sets have more classes, and the traffic signs are more complicated picutres than numbers, which contain more features. So the first thing I did is to add more parameters, i.e. increase the feature map numbers of the convolution layers, to 12 and 32, doubling the default numbers of LeNet. The accuracy increased to about 93% after this. Since accuracy got improved, I tried to add dropout to prevent overfitting. With a dropout rate of 0.5, the accuracy becomes above 95%
 
 * Which parameters were tuned? How were they adjusted and why?
+
 After above mentioned two measures, adding more feature maps, and adding dropout layers, I also tried to tune other parameters, like learning rate, batch size, epochs. I increased epochs from 10 to 20, and the accuracy increased to above 96%. But with different learning rate, batch size, I either see worse results or no obvious improvements.
 
 * What are some of the important design choices and why were they chosen? For example, why might a convolution layer work well with this problem? How might a dropout layer help with creating a successful model?
-This is basically explained above in the architecture adjustment topic. The most important two measures are add more feature maps to the convolution layers and adding dropout layers. Also, increase epoch number seems helpful.
+
+This is basically explained above in the architecture adjustment topic. The most important two measures are to add more feature maps to the convolution layers and add dropout layers. Also, increasing epoch number seems helpful.
 
 If a well known architecture was chosen:
 * What architecture was chosen?
+
 The LeNet architecture.
+
 * Why did you believe it would be relevant to the traffic sign application?
-First, it's a well known architecture to classify images, which is just the task of this project. Second, even with its default architecture, the accuracy is already very high, 89%, which indicates that with some adjustments, it should be able to fullfil the requirements of this project.
+
+First, it's a well known architecture to classify images, which is just the task of this project. Second, even with its default architecture, the accuracy is already very high, 89%, which indicates that with some adjustments, it should be able to meet the requirements of this project.
 
 * How does the final model's accuracy on the training, validation and test set provide evidence that the model is working well?
+
 The accuracy of all the data sets is about 95% or above, which means the model is working well, maybe not perfectly. There's still overfitting problem since the accuracy is lower on validation and test sets.
 
 ###Test a Model on New Images
@@ -150,7 +161,7 @@ Here are the results of the prediction:
 | traffic signals			| general caution      							|
 
 
-The model was able to correctly guess 4 of the 5 traffic signs, which gives an accuracy of 80%. The accuracy on the test set of 94.9%. I think maybe providing more new images can get a hiher accuracy. I checked why the 5th (traffic signals) is predicted wrong. One reason should be that the traffic signal class only have about 500 samples, which is relatively lower that many other classes. The other reason is that it does look similar to the general caution sign.
+The model was able to correctly guess 4 of the 5 traffic signs, which gives an accuracy of 80%. The accuracy on the test set is 94.9%. I think maybe providing more new images can get a higher accuracy. I checked why the 5th (traffic signal) is predicted wrong. One reason should be that the traffic signal class only has about 500 samples, which is relatively lower that many other classes. The other reason is that it does look similar to the general caution sign.
 
 ####3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
 
@@ -211,6 +222,7 @@ For the fifth image the model thinks this is a "General caution", but the image 
 
 ### (Optional) Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)
 ####1. Discuss the visual output of your trained network's feature maps. What characteristics did the neural network use to make classifications?
-I visuallized all the 5 new images. Basically, it seems that the convolution layer 1 can already recognize the exact traffic signs, including the outside circle or triangle, and the inside actual signs. convolution layer 2 maybe too small (only 5 x 5), so visulization doesn't provide much information.
+
+I visuallized all the 5 new images. Basically, it seems that the convolution layer 1 can already recognize the exact traffic signs, including the outside circle or triangle, and the inside actual signs. convolution layer 2 feature maps may be too small (only 10 x 10), so visualization doesn't provide much information.
 
 
